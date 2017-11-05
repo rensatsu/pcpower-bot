@@ -132,7 +132,34 @@ namespace PCPowerBot
                 botNameBox.Text = me.Username;
 
                 bot.StartReceiving();
+
+                MinimizeTimer();
             }
+            else
+            {
+                Opacity = 1;
+            }
+
+            trayIcon.Text = Text;
+        }
+
+        private void MinimizeTimer()
+        {
+            var aTimer = new System.Timers.Timer
+            {
+                Interval = 500,
+                AutoReset = false
+            };
+
+            aTimer.Elapsed += (Object source, System.Timers.ElapsedEventArgs e) =>
+            {
+                Invoke((MethodInvoker)delegate
+                {
+                    this.WindowState = FormWindowState.Minimized;
+                });
+            };
+
+            aTimer.Enabled = true;
         }
 
         static async Task<Telegram.Bot.Types.User> GetMyInfo()
@@ -155,7 +182,11 @@ namespace PCPowerBot
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            bot.StopReceiving();
+            try
+            {
+                bot.StopReceiving();
+            }
+            catch (Exception) { }
         }
 
         private void maxDelayBox_SelectedValueChanged(object sender, EventArgs e)
@@ -172,6 +203,37 @@ namespace PCPowerBot
         {
             Properties.Settings.Default.ApiUser = userIdBox.Text.Trim();
             Properties.Settings.Default.Save();
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                Hide();
+            }
+        }
+
+        private void ShowForm()
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
+            BringToFront();
+            Opacity = 1;
+        }
+
+        private void showApplicationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowForm();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void trayIcon_DoubleClick(object sender, EventArgs e)
+        {
+            ShowForm();
         }
     }
 }
