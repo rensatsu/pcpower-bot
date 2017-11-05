@@ -3,7 +3,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Telegram.Bot;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PCPowerBot
 {
@@ -48,11 +50,51 @@ namespace PCPowerBot
             });
         }
 
+        private static ReplyKeyboardMarkup GetKeyboard()
+        {
+            return new ReplyKeyboardMarkup(new[]
+            {
+                new [] // top row
+                {
+                    new KeyboardButton("Lock")
+                },
+                new [] // middle row
+                {
+                    new KeyboardButton("Shutdown"),
+                    new KeyboardButton("Reboot")
+                },
+                new [] // bottom row
+                {
+                    new KeyboardButton("Sleep"),
+                    new KeyboardButton("Hibernate")
+                }
+            });
+        }
+
         private static async void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs)
         {
             var message = messageEventArgs.Message;
+            var keyboard = GetKeyboard();
 
             if (message == null || message.Type != MessageType.TextMessage) return;
+
+            if (message.Text.StartsWith("/start"))
+            {
+                await bot.SendTextMessageAsync(message.Chat.Id, @"Hello", replyMarkup: keyboard);
+                return;
+            }
+
+            if (Properties.Settings.Default.ApiUser == "")
+            {
+                Properties.Settings.Default.ApiUser = message.From.Id.ToString();
+                Properties.Settings.Default.Save();
+            }
+
+            if (Properties.Settings.Default.ApiUser != message.From.Id.ToString())
+            {
+                await bot.SendTextMessageAsync(message.Chat.Id, @"Access denied", replyMarkup: keyboard);
+                return;
+            }
 
             var timeDiff = (message.Date - DateTime.Now).TotalSeconds;
 
@@ -66,50 +108,54 @@ namespace PCPowerBot
                 return;
             }
 
-            if (Properties.Settings.Default.ApiUser == "")
+            if (message.Text.StartsWith("Shutdown") || message.Text.StartsWith("/power"))
             {
-                Properties.Settings.Default.ApiUser = message.From.Id.ToString();
-                Properties.Settings.Default.Save();
-            }
-
-            if (Properties.Settings.Default.ApiUser != message.From.Id.ToString())
-            {
-                await bot.SendTextMessageAsync(message.Chat.Id, @"Access denied");
-                return;
-            }
-
-            if (message.Text.StartsWith("/power"))
-            {
-                await bot.SendTextMessageAsync(message.Chat.Id, @"Turning your PC off");
+                await bot.SendTextMessageAsync(message.Chat.Id, @"Turning your PC off", replyMarkup: keyboard);
                 PowerControl.Shutdown();
             }
-            else if (message.Text.StartsWith("/reboot") || message.Text.StartsWith("/restart"))
+            else if (message.Text.StartsWith("Reboot") || message.Text.StartsWith("/reboot") || message.Text.StartsWith("/restart"))
             {
-                await bot.SendTextMessageAsync(message.Chat.Id, @"Rebooting your PC");
+                await bot.SendTextMessageAsync(message.Chat.Id, @"Rebooting your PC", replyMarkup: keyboard);
                 PowerControl.Reboot();
             }
-            else if (message.Text.StartsWith("/sleep"))
+            else if (message.Text.StartsWith("Sleep") || message.Text.StartsWith("/sleep"))
             {
-                await bot.SendTextMessageAsync(message.Chat.Id, @"Putting your PC into sleep mode");
+                await bot.SendTextMessageAsync(message.Chat.Id, @"Putting your PC into sleep mode", replyMarkup: keyboard);
                 PowerControl.Sleep();
             }
-            else if (message.Text.StartsWith("/hibernate"))
+            else if (message.Text.StartsWith("Hibernate") || message.Text.StartsWith("/hibernate"))
             {
-                await bot.SendTextMessageAsync(message.Chat.Id, @"Putting your PC into hibernation");
+                await bot.SendTextMessageAsync(message.Chat.Id, @"Putting your PC into hibernation", replyMarkup: keyboard);
                 PowerControl.Hibernate();
             }
-            else if (message.Text.StartsWith("/lock"))
+            else if (message.Text.StartsWith("Lock") || message.Text.StartsWith("/lock"))
             {
-                await bot.SendTextMessageAsync(message.Chat.Id, @"Locking your PC");
+                await bot.SendTextMessageAsync(message.Chat.Id, @"Locking your PC", replyMarkup: keyboard);
                 PowerControl.Lock();
             }
             else
             {
-                await bot.SendTextMessageAsync(message.Chat.Id, @"Unknown command");
+                await bot.SendTextMessageAsync(message.Chat.Id, @"Unknown command", replyMarkup: keyboard);
             }
         }
 
-        private async void MainForm_Load(object sender, EventArgs e)
+        private async void InitApp()
+        {
+            try
+            {
+                var me = await GetMyInfo();
+                botNameBox.Text = me.Username;
+
+                bot.StartReceiving();
+            }
+            catch (Exception)
+            {
+                System.Threading.Thread.Sleep(500);
+                InitApp();
+            }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
         {
             botToken.Text = Properties.Settings.Default.ApiKey;
             maxDelayBox.Text = Properties.Settings.Default.MaxDelay.ToString();
@@ -128,11 +174,8 @@ namespace PCPowerBot
             if (botEnabled)
             {
                 bot.OnMessage += BotOnMessageReceived;
-                var me = await GetMyInfo();
-                botNameBox.Text = me.Username;
 
-                bot.StartReceiving();
-
+                InitApp();
                 MinimizeTimer();
             }
             else
