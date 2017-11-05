@@ -1,0 +1,5 @@
+﻿power - Turn off PC
+reboot - Reboot your PC (alias: restart)
+sleep - Put PC into sleep mode
+hibernate - Put PC into hibernation
+lock - Lock PC
