@@ -13,6 +13,14 @@ namespace PCPowerBot
     {
         private static TelegramBotClient bot;
         private bool botEnabled = false;
+        private enum LockScreenStatus : byte
+        {
+            Unknown = 0,
+            Locked = 1,
+            Unlocked = 2
+        };
+
+        private static LockScreenStatus isLocked = LockScreenStatus.Unknown;
 
         public MainForm()
         {
@@ -130,7 +138,22 @@ namespace PCPowerBot
             }
             else if (message.Text.StartsWith("Lock") || message.Text.StartsWith("/lock"))
             {
-                await bot.SendTextMessageAsync(message.Chat.Id, @"Locking your PC", replyMarkup: keyboard);
+                string text = String.Empty;
+
+                switch (isLocked)
+                {
+                    case LockScreenStatus.Locked:
+                        text = @"Your PC is already locked";
+                        break;
+                    case LockScreenStatus.Unlocked:
+                        text = @"Your PC is unlocked, locking";
+                        break;
+                    default:
+                        text = @"Current lock status is unknown, locking";
+                        break;
+                }
+
+                await bot.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: keyboard);
                 PowerControl.Lock();
             }
             else
@@ -184,6 +207,21 @@ namespace PCPowerBot
             }
 
             trayIcon.Text = Text;
+
+            Microsoft.Win32.SystemEvents.SessionSwitch += new Microsoft.Win32.SessionSwitchEventHandler(SystemEvents_SessionSwitch);
+            isLocked = LockScreenStatus.Unlocked;
+        }
+
+        private void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
+        {
+            if (e.Reason == Microsoft.Win32.SessionSwitchReason.SessionLock)
+            {
+                isLocked = LockScreenStatus.Locked;
+            }
+            else if (e.Reason == Microsoft.Win32.SessionSwitchReason.SessionUnlock)
+            {
+                isLocked = LockScreenStatus.Unlocked;
+            }
         }
 
         private void MinimizeTimer()
