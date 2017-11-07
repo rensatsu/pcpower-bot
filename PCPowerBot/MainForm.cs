@@ -11,7 +11,7 @@ namespace PCPowerBot
 {
     public partial class MainForm : Form
     {
-        private static TelegramBotClient bot;
+        private TelegramBotClient bot;
         private bool botEnabled = false;
         private enum LockScreenStatus : byte
         {
@@ -20,7 +20,7 @@ namespace PCPowerBot
             Unlocked = 2
         };
 
-        private static LockScreenStatus isLocked = LockScreenStatus.Unknown;
+        private LockScreenStatus isLocked = LockScreenStatus.Unknown;
 
         public MainForm()
         {
@@ -58,7 +58,7 @@ namespace PCPowerBot
             });
         }
 
-        private static ReplyKeyboardMarkup GetKeyboard()
+        private ReplyKeyboardMarkup GetKeyboard()
         {
             return new ReplyKeyboardMarkup(new[]
             {
@@ -79,7 +79,7 @@ namespace PCPowerBot
             });
         }
 
-        private static async void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs)
+        private async void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs)
         {
             var message = messageEventArgs.Message;
             var keyboard = GetKeyboard();
@@ -243,7 +243,7 @@ namespace PCPowerBot
             aTimer.Enabled = true;
         }
 
-        static async Task<Telegram.Bot.Types.User> GetMyInfo()
+        async Task<Telegram.Bot.Types.User> GetMyInfo()
         {
             var me = await bot.GetMeAsync();
             return me;
