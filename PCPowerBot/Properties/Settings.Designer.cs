@@ -70,5 +70,29 @@ namespace PCPowerBot.Properties {
                 this["ApiUser"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Virtual Network")]
+        public string VWiFiName {
+            get {
+                return ((string)(this["VWiFiName"]));
+            }
+            set {
+                this["VWiFiName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("123456789")]
+        public string VWiFiPassword {
+            get {
+                return ((string)(this["VWiFiPassword"]));
+            }
+            set {
+                this["VWiFiPassword"] = value;
+            }
+        }
     }
 }

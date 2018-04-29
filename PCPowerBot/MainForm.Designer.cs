@@ -44,6 +44,12 @@
             this.trayIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showApplicationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label5 = new System.Windows.Forms.Label();
+            this.vwifiNameBox = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.vwifiPasswordBox = new System.Windows.Forms.TextBox();
+            this.btnSaveVwifiName = new System.Windows.Forms.Button();
+            this.btnSaveVwifiPass = new System.Windows.Forms.Button();
             this.trayIconMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -178,11 +184,69 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(10, 193);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(158, 15);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "Virtual Wi-Fi Network: Name";
+            // 
+            // vwifiNameBox
+            // 
+            this.vwifiNameBox.Location = new System.Drawing.Point(14, 211);
+            this.vwifiNameBox.Name = "vwifiNameBox";
+            this.vwifiNameBox.Size = new System.Drawing.Size(349, 23);
+            this.vwifiNameBox.TabIndex = 12;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(10, 237);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(176, 15);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "Virtual Wi-Fi Network: Password";
+            // 
+            // vwifiPasswordBox
+            // 
+            this.vwifiPasswordBox.Location = new System.Drawing.Point(14, 255);
+            this.vwifiPasswordBox.Name = "vwifiPasswordBox";
+            this.vwifiPasswordBox.Size = new System.Drawing.Size(349, 23);
+            this.vwifiPasswordBox.TabIndex = 14;
+            // 
+            // btnSaveVwifiName
+            // 
+            this.btnSaveVwifiName.Location = new System.Drawing.Point(371, 211);
+            this.btnSaveVwifiName.Name = "btnSaveVwifiName";
+            this.btnSaveVwifiName.Size = new System.Drawing.Size(77, 23);
+            this.btnSaveVwifiName.TabIndex = 15;
+            this.btnSaveVwifiName.Text = "Save";
+            this.btnSaveVwifiName.UseVisualStyleBackColor = true;
+            this.btnSaveVwifiName.Click += new System.EventHandler(this.btnSaveVwifiName_Click);
+            // 
+            // btnSaveVwifiPass
+            // 
+            this.btnSaveVwifiPass.Location = new System.Drawing.Point(371, 255);
+            this.btnSaveVwifiPass.Name = "btnSaveVwifiPass";
+            this.btnSaveVwifiPass.Size = new System.Drawing.Size(77, 23);
+            this.btnSaveVwifiPass.TabIndex = 16;
+            this.btnSaveVwifiPass.Text = "Save";
+            this.btnSaveVwifiPass.UseVisualStyleBackColor = true;
+            this.btnSaveVwifiPass.Click += new System.EventHandler(this.btnSaveVwifiPass_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(465, 209);
+            this.ClientSize = new System.Drawing.Size(465, 296);
+            this.Controls.Add(this.btnSaveVwifiPass);
+            this.Controls.Add(this.btnSaveVwifiName);
+            this.Controls.Add(this.vwifiPasswordBox);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.vwifiNameBox);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.btnSaveUser);
             this.Controls.Add(this.botNameBox);
             this.Controls.Add(this.userIdBox);
@@ -227,6 +291,12 @@
         private System.Windows.Forms.ContextMenuStrip trayIconMenu;
         private System.Windows.Forms.ToolStripMenuItem showApplicationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox vwifiNameBox;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox vwifiPasswordBox;
+        private System.Windows.Forms.Button btnSaveVwifiName;
+        private System.Windows.Forms.Button btnSaveVwifiPass;
     }
 }
 

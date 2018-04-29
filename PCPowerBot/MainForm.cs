@@ -66,15 +66,20 @@ namespace PCPowerBot
                 {
                     new KeyboardButton("Lock")
                 },
-                new [] // middle row
+                new [] // middle-1 row
                 {
                     new KeyboardButton("Shutdown"),
                     new KeyboardButton("Reboot")
                 },
-                new [] // bottom row
+                new [] // middle-2 row
                 {
                     new KeyboardButton("Sleep"),
                     new KeyboardButton("Hibernate")
+                },
+                new [] // bottom row
+                {
+                    new KeyboardButton("Wi-Fi Enable"),
+                    new KeyboardButton("Wi-Fi Disable")
                 }
             });
         }
@@ -136,6 +141,16 @@ namespace PCPowerBot
                 await bot.SendTextMessageAsync(message.Chat.Id, @"Putting your PC into hibernation", replyMarkup: keyboard);
                 PowerControl.Hibernate();
             }
+            else if (message.Text.StartsWith("Wi-Fi Enable") || message.Text.StartsWith("/wifienable"))
+            {
+                await bot.SendTextMessageAsync(message.Chat.Id, @"Trying to enable Virtual Wi-Fi", replyMarkup: keyboard);
+                VwifiControl.Start(Properties.Settings.Default.VWiFiName, Properties.Settings.Default.VWiFiPassword);
+            }
+            else if (message.Text.StartsWith("Wi-Fi Disable") || message.Text.StartsWith("/wifidisable"))
+            {
+                await bot.SendTextMessageAsync(message.Chat.Id, @"Trying to disable Virtual Wi-Fi", replyMarkup: keyboard);
+                VwifiControl.Stop();
+            }
             else if (message.Text.StartsWith("Lock") || message.Text.StartsWith("/lock"))
             {
                 string text = String.Empty;
@@ -183,6 +198,8 @@ namespace PCPowerBot
             botToken.Text = Properties.Settings.Default.ApiKey;
             maxDelayBox.Text = Properties.Settings.Default.MaxDelay.ToString();
             userIdBox.Text = Properties.Settings.Default.ApiUser;
+            vwifiNameBox.Text = Properties.Settings.Default.VWiFiName;
+            vwifiPasswordBox.Text = Properties.Settings.Default.VWiFiPassword;
 
             var delayIdx = maxDelayBox.Items.IndexOf(Properties.Settings.Default.MaxDelay.ToString());
             if (delayIdx == -1)
@@ -315,6 +332,18 @@ namespace PCPowerBot
         private void trayIcon_DoubleClick(object sender, EventArgs e)
         {
             ShowForm();
+        }
+
+        private void btnSaveVwifiName_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.VWiFiName = vwifiNameBox.Text.Trim();
+            Properties.Settings.Default.Save();
+        }
+
+        private void btnSaveVwifiPass_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.VWiFiPassword = vwifiPasswordBox.Text.Trim();
+            Properties.Settings.Default.Save();
         }
     }
 }

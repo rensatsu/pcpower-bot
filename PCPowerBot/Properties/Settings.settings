@@ -14,5 +14,11 @@
     <Setting Name="ApiUser" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="VWiFiName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Virtual Network</Value>
+    </Setting>
+    <Setting Name="VWiFiPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">123456789</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
